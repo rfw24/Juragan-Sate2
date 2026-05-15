@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juragan Sate Nusantara</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&family=Skranji&family=Varela+Round&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 id="splash-title"
+                style="color:#e08b1b; text-shadow: 2px 2px 0 #4f1a10; font-size: 2.5rem; margin-bottom: 10px;">Juragan
+                Sate</h1>
+            <p style="color:#f2dec4;">Nusantara Edition</p>
+            <div class="loading-bar-container">
+                <div id="loading-bar-fill"></div>
+            </div>
+            <p id="loading-text" style="font-size: 0.8rem; color:#c29b70;">Memanaskan Arang...</p>
+        </div>
+    </div>
+
+    <div class="top-hud">
+        <div class="hud-item" id="wallet-level"
+            style="flex-direction: column; align-items: stretch; padding: 4px 8px; gap: 4px; min-width: 75px; cursor: pointer;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <img src="assets/img/icons/icon_star.png" class="hud-icon" alt="Level">
+                <span id="ui-juragan-lvl" style="color:#ffca28; font-weight: bold;">Lv.- 1</span>
+            </div>
+            <div
+                style="width: 100%; height: 4px; background: rgba(0,0,0,0.8); border-radius: 2px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);">
+                <div id="ui-exp-bar"
+                    style="width: 0%; height: 100%; background: linear-gradient(90deg, #42a5f5, #00e5ff); border-radius: 2px; transition: width 0.3s ease-out; box-shadow: 0 0 5px rgba(0, 229, 255, 0.5);">
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-item" id="wallet-coin" style="cursor: pointer;">
+            <img src="assets/img/icons/icon_coin.png" class="hud-icon" alt="Koin">
+            <span id="ui-money" style="color:#fff; font-weight: bold;">0</span>
+        </div>
+        <div class="hud-item" id="wallet-diamond" style="cursor: pointer;">
+            <img src="assets/img/icons/icon_diamond.png" class="hud-icon" alt="Berlian">
+            <span id="ui-diamond" style="color:#81d4fa; font-weight: bold;">0</span>
+        </div>
+        <div class="hud-item" id="nav-options" style="cursor: pointer; min-width: unset; padding: 5px 8px;">
+            <img src="assets/img/icons/icon_gear.png" class="hud-icon" style="filter:none;" alt="Opsi">
+        </div>
+    </div>
+
+    <div class="stage-wrapper" id="btn-stage-select">
+        <div class="stage-info">
+            <div id="ui-stage-title" class="stage-title">STAGE 1 ▾</div>
+            <div id="ui-mode-title" class="cust-title">Pelanggan Ke-<span id="ui-cust-index">1</span></div>
+            <div class="satay-progress">
+                <div id="ui-satay-bar" class="progress-fill"></div>
+                <div class="progress-text"><span id="ui-satay-current">0</span> / <span id="ui-satay-target">10</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stage-container" id="stage-area">
+        <canvas id="game-canvas"></canvas>
+
+        <div id="btn-floating-absen" class="floating-btn">
+            <img src="assets/img/icons/icon_daily.png" alt="Absen">
+            <div id="absen-notif-dot" class="notif-dot hidden">!</div>
+        </div>
+        <div id="particle-container"></div>
+        <div id="ui-buff-text-top"
+            style="position:absolute; top:70px; left:50%; transform:translateX(-50%); font-weight:900; font-size:0.7rem; text-shadow:1px 1px 2px #000; z-index:15;">
+        </div>
+
+        <div id="vip-container"
+            style="display:none; position:absolute; bottom:20px; left:50%; transform:translateX(-50%); z-index:40; pointer-events:auto;">
+            <button id="btn-summon-vip"
+                style="background:linear-gradient(145deg, #df483b, #a83220); color:white; border:2px solid #fff; padding:10px 30px; border-radius:25px; font-weight:900; font-size:1.1rem; text-shadow:1px 1px 2px rgba(0,0,0,0.5); box-shadow:0 6px 12px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.4); cursor:pointer; animation: pulse-dot 1s infinite;">LAYANI
+                VIP!</button>
+        </div>
+    </div>
+
+    <div class="action-area">
+        <div class="stat-row" style="margin-bottom: 6px; align-items:center;">
+            <div style="background:rgba(0,0,0,0.5); padding:4px 12px; border-radius:20px; border:1px solid rgba(194,155,112,0.4); font-size: 0.85rem; display:flex; align-items:center; gap:5px; box-shadow:0 2px 4px rgba(0,0,0,0.3); backdrop-filter:blur(2px);">
+                <span id="ui-stat-sps" style="color:#00e676; font-weight:900; font-size:1.05rem; text-shadow:1px 1px 0 #000;">0</span> <span style="color:#f2dec4;">Sate/Dtk</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:20px; border:1px solid rgba(194,155,112,0.4); box-shadow:0 2px 4px rgba(0,0,0,0.3); backdrop-filter:blur(2px);">
+                <label class="chk-label"><input type="checkbox" id="chk-auto-vip" class="sunken-checkbox">Auto VIP</label>
+            </div>
+        </div>
+        <div class="stat-row" style="margin-bottom: 8px; align-items:center;">
+            <div id="ui-combo-text" class="combo-text" style="background:rgba(0,0,0,0.5); padding:4px 12px; border-radius:20px; border:1px solid rgba(194,155,112,0.4); font-size:0.8rem; color:#ffca28; box-shadow:0 2px 4px rgba(0,0,0,0.3); backdrop-filter:blur(2px); text-shadow:1px 1px 0 #000; margin:0;">Combo: 0 | Crit: 0%</div>
+            <div style="background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:20px; border:1px solid rgba(194,155,112,0.4); box-shadow:inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 1px rgba(255,255,255,0.1); backdrop-filter:blur(2px); cursor:pointer;" id="btn-show-stats">
+                <span class="chk-label" style="pointer-events:none; gap:5px; font-size:0.75rem;">📊 Rincian</span>
+            </div>
+        </div>
+
+        <div class="heat-bar-container">
+            <div id="ui-heat-indicator"
+                style="width:100%; height:100%; background:linear-gradient(90deg, #e08b1b, #df483b); transform-origin:left; transform:scaleX(0); transition:transform 0.1s;">
+            </div>
+            <div class="heat-marker"></div>
+        </div>
+
+        <div class="button-row" style="margin-top: 6px;">
+            <button id="btn-fan-left" class="btn-fan btn-fan-primary">KIRI</button>
+            <button id="btn-fan-right" class="btn-fan btn-fan-secondary">KANAN</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item" id="nav-warung"><img src="assets/img/icons/icon_warung.png" class="nav-icon"
+                alt="Warung">Warung</button>
+        <button class="nav-item" id="nav-pusaka"><img src="assets/img/icons/icon_pusaka.png" class="nav-icon"
+                alt="Pusaka">Pusaka</button>
+        <button class="nav-item" id="nav-hp"><img src="assets/img/icons/icon_hp.png" class="nav-icon" alt="HP">HP
+            Juragan</button>
+        <button class="nav-item" id="nav-inventory"><img src="assets/img/icons/icon_tas.png" class="nav-icon"
+                alt="Tas">Tas</button>
+    </div>
+    <div id="absen-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <div class="modal-header-flex">
+                <h3 class="modal-title" style="margin:0;">Absen Harian</h3><button class="btn-close-quick is-pressed"
+                    id="btn-close-absen"
+                    style="width:30px;height:30px;padding:0;margin:0;border-radius:15px;background:rgba(0,0,0,0.1);border:none;">X</button>
+            </div>
+            <p style="font-size:0.8rem; color:#4f1a10; margin-bottom:15px;">Ambil modal usaha tiap hari!</p>
+            <div id="absen-grid" class="absen-grid"></div><button id="btn-claim-absen" class="btn-action"
+                style="margin-top:20px;">AMBIL HADIAH</button>
+        </div>
+    </div>
+
+    <div id="warung-sheet" class="bottom-sheet">
+        <div class="sheet-header">
+            <h3>Fasilitas Warung</h3><button class="btn-close-sheet" id="btn-close-warung">X</button>
+        </div>
+        <div class="tabs-container">
+            <div class="tab-btn active" id="alat-tab" data-tab="alat">Alat</div>
+            <div class="tab-btn" id="resep-tab" data-tab="resep">Resep</div>
+            <div class="tab-btn" id="sdm-tab" data-tab="sdm">Pegawai</div>
+        </div>
+        <div style="padding: 10px 15px; text-align: right; border-bottom: 1px solid #c29b70; background: #e8cda7;">
+            <button id="btn-buy-mode"
+                style="background:#e08b1b; color:white; border:none; padding:5px 15px; border-radius:8px; font-weight:bold; box-shadow:0 3px 0 #b36a0d;">Beli:
+                x1</button></div>
+        <div class="sheet-content" id="warung-content"></div>
+    </div>
+
+    <div id="pusaka-sheet" class="bottom-sheet">
+        <div class="sheet-header">
+            <h3>Pusaka Juragan</h3><button class="btn-close-sheet" id="btn-close-pusaka">X</button>
+        </div>
+        <div class="sheet-content">
+            <div
+                style="background:#f2dec4; padding:15px; border-radius:12px; border:2px solid #c29b70; margin-bottom:20px; text-align:center;">
+                <p style="font-size:0.8rem; font-weight:bold; color:#6e2e00; margin-bottom:10px;">Pusaka Aktif (Maks 2)
+                </p>
+                <div style="display:flex; justify-content:center; gap:15px;">
+                    <div id="slot-1" class="equip-slot"><span class="empty-slot"
+                            style="font-size:0.8rem; color:#8a6c55;">Kosong</span></div>
+                    <div id="slot-2" class="equip-slot"><span class="empty-slot"
+                            style="font-size:0.8rem; color:#8a6c55;">Kosong</span></div>
+                </div>
+            </div>
+            <h4 style="color:#6e2e00; margin-bottom:10px;">Koleksi Anda</h4>
+            <div id="equip-list" class="equip-list"></div>
+        </div>
+    </div>
+
+    <div id="inventory-sheet" class="bottom-sheet">
+        <div class="sheet-header">
+            <h3>Tas Juragan</h3><button class="btn-close-sheet" id="btn-close-inventory">X</button>
+        </div>
+        <div class="tabs-container">
+            <div class="tab-btn active" id="tab-inv-boxes">Peti Hadiah</div>
+            <div class="tab-btn" id="tab-inv-currency">Mata Uang</div>
+        </div>
+        <div class="sheet-content" id="inventory-content"></div>
+    </div>
+
+    <div id="hp-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">HP Juragan</h3>
+            <p style="font-size:0.75rem; color:#4f1a10;">Pilih Aplikasi Anda</p>
+            <div class="app-grid"><button class="app-btn" id="app-shatee"><img src="assets/img/icons/app_shatee.png"
+                        class="app-icon"><span class="app-name">Sha-Tee</span></button><button class="app-btn"
+                    onclick="window.openQuickBuy('daur')"><img src="assets/img/icons/app_rongsok.png"
+                        class="app-icon"><span class="app-name">Rongsok-In</span></button><button class="app-btn"
+                    onclick="window.openQuickBuy('go-jamu-app')"><img src="assets/img/icons/app_jamu.png"
+                        class="app-icon"><span class="app-name">Go-Jamu</span></button><button class="app-btn"
+                    id="app-review"><img src="assets/img/icons/app_sategram.png" class="app-icon"><span
+                        class="app-name">Sate-Gram</span></button><button class="app-btn" id="app-undian"><img
+                        src="assets/img/icons/app_satehoki.png" class="app-icon"><span class="app-name">Sate
+                        Hoki</span></button></div><button class="btn-close-quick" id="btn-close-hp">Tutup HP</button>
+        </div>
+    </div>
+
+    <div id="info-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 id="info-title" class="modal-title"></h3>
+            <div style="display:flex; flex-direction:column; background:#f2dec4; border:1px solid #c29b70; border-radius:12px; padding:15px; margin-bottom:14px; text-align:center;">
+                <div id="info-icon" style="width:60px; height:60px; margin:0 auto 10px; background:#dac09c; border-radius:10px; display:flex; justify-content:center; align-items:center; border:1px solid #c29b70; font-size:2rem;"></div>
+                <p id="info-lore" style="font-size:0.75rem; color:#8a5c3c; font-style:italic; margin:0 0 10px 0;"></p>
+                <div style="text-align:left; font-size:0.8rem; color:#4f1a10; line-height:1.5; border-top:1px dashed #c29b70; padding-top:10px;">
+                    <strong>Dapat dari:</strong> <span id="info-source"></span><br><br>
+                    <strong>Kegunaan:</strong> <span id="info-usage"></span>
+                </div>
+            </div>
+            <div id="info-action-container" style="display:none; margin-bottom:15px;"><button id="btn-info-action" class="btn-action"></button></div>
+            <button class="btn-close-quick" id="btn-close-info">Kembali</button>
+        </div>
+    </div>
+
+    <div id="review-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <div class="modal-header-flex">
+                <h3 class="modal-title" style="margin:0;">Sate-Gram</h3>
+                <div class="currency-pill"><img src="assets/img/icons/icon_jempol.png"><span class="val-jempol">0</span>
+                </div>
+            </div>
+            <p style="font-size:0.8rem; color:#4f1a10;">Rating Warung Kamu</p>
+            <div style="margin:10px 0;"><img src="assets/img/icons/icon_star.png" style="width:30px;"><img
+                    src="assets/img/icons/icon_star.png" style="width:30px;"><img src="assets/img/icons/icon_star.png"
+                    style="width:30px;"><img src="assets/img/icons/icon_star.png" style="width:30px;"><img
+                    src="assets/img/icons/icon_star.png" style="width:30px;"></div>
+            <div style="background:#f2dec4; padding:10px; border-radius:8px; border:1px dashed #c29b70; margin-bottom:15px; font-size:0.8rem; line-height:1.4; color:#4f1a10;">
+                <strong style="color:#4f1a10;">Fungsi Rating:</strong><br>
+                Meningkatkan <span style="color:#a12b00; font-weight:bold;">Multiplier Harga (+1%)</span>, <span style="color:#a12b00; font-weight:bold;">Multiplier Power (+1%)</span>, dan menambah <span style="color:#1a6b3c; font-weight:bold;">Multiplier Efek Trance VIP (+1%)</span>.<br>
+                <i style="color:#8a6c55; display:block; margin-top:5px; font-size:0.75rem;">"Influencer jaman now emang gampang disogok pake sate."</i>
+            </div>
+            <div id="review-list"></div><button class="btn-action" id="btn-confirm-review">Tingkatkan Rating<br>(Butuh <img src="assets/img/icons/icon_jempol.png" style="width:16px;vertical-align:middle;"> <span id="review-cost">100</span>)</button><button class="btn-close-quick" id="btn-close-review">Tutup</button>
+        </div>
+    </div>
+
+    <div id="stat-alloc-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Status Juragan</h3>
+            <p style="font-size:0.8rem; color:#6e2e00; margin-bottom:15px;">Poin Tersedia: <strong id="ui-avail-stats"
+                    style="color:#e08b1b; font-size:1.2rem;">0</strong></p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div
+                    style="background:#f2dec4; padding:10px; border-radius:8px; border:1px solid #c29b70; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="text-align:left;">
+                        <div style="font-weight:bold; color:#6e2e00;">Otot Bakar</div>
+                        <div style="font-size:0.7rem; color:#8a6c55;">+1% Pengali Pwr/Lv</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;"><strong id="stat-lvl-power"
+                            style="color:#a12b00;">0</strong><button id="btn-add-power"
+                            style="background:#e08b1b; color:white; border:none; width:24px; height:24px; border-radius:4px; font-weight:bold;">+</button>
+                    </div>
+                </div>
+                <div
+                    style="background:#f2dec4; padding:10px; border-radius:8px; border:1px solid #c29b70; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="text-align:left;">
+                        <div style="font-weight:bold; color:#6e2e00;">Bakat Dagang</div>
+                        <div style="font-size:0.7rem; color:#8a6c55;">+1% Harga Jual/Lv</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;"><strong id="stat-lvl-price"
+                            style="color:#a12b00;">0</strong><button id="btn-add-price"
+                            style="background:#e08b1b; color:white; border:none; width:24px; height:24px; border-radius:4px; font-weight:bold;">+</button>
+                    </div>
+                </div>
+                <div
+                    style="background:#f2dec4; padding:10px; border-radius:8px; border:1px solid #c29b70; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="text-align:left;">
+                        <div style="font-weight:bold; color:#6e2e00;">Viral</div>
+                        <div style="font-size:0.7rem; color:#8a6c55;">+1 Jempol/Pelanggan <span id="stat-viral-lock"
+                                style="color:#b31604; font-size:0.6rem;"></span></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;"><strong id="stat-lvl-viral"
+                            style="color:#a12b00;">0</strong><button id="btn-add-viral"
+                            style="background:#e08b1b; color:white; border:none; width:24px; height:24px; border-radius:4px; font-weight:bold;">+</button>
+                    </div>
+                </div>
+            </div><button class="btn-close-quick" id="btn-close-stat-alloc" style="margin-top:20px;">Tutup</button>
+        </div>
+    </div>
+
+    <div id="shatee-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <div class="modal-header-flex">
+                <h3 class="modal-title" style="margin:0;">Sha-Tee</h3>
+                <div class="currency-pill"><img src="assets/img/icons/icon_diamond.png"><span
+                        class="val-diamonds">0</span></div>
+            </div>
+            <div style="font-style:italic; text-align:center; color:#8a6c55; font-size:0.8rem; margin: 10px 0 15px 0;">
+                "Belanja barang gacha impianmu!<br>Gratis ongkir (kalau yang anterin kebetulan lewat)."
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0;">
+                <button class="shatee-card" id="btn-buy-shatee-peti">
+                    <div style="display:flex; align-items:center; gap:10px;"><img
+                            src="assets/img/icons/item_peti_kayu.png" style="width:30px;"> <strong
+                            style="color:#6e2e00;">Peti Pusaka Biasa</strong></div>
+                    <div style="font-weight:bold; color:#a12b00;"><img src="assets/img/icons/icon_diamond.png"
+                            style="width:16px; vertical-align:middle;"> 200</div>
+                </button>
+                <button class="shatee-card" id="btn-buy-shatee-jamu">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="assets/img/icons/item_voucher_jamu.png" style="width:30px;">
+                        <div style="text-align:left;">
+                            <strong style="color:#6e2e00; display:block;">Voucher Jamu</strong>
+                            <span id="shatee-jamu-limit" style="font-size:0.75rem; color:#a12b00; font-weight:bold;">Sisa: 5/5</span>
+                        </div>
+                    </div>
+                    <div style="font-weight:bold; color:#a12b00;"><img src="assets/img/icons/icon_diamond.png"
+                            style="width:16px; vertical-align:middle;"> 38</div>
+                </button>
+                <button class="shatee-card" id="btn-buy-shatee-sultan">
+                    <div style="display:flex; align-items:center; gap:10px;"><img
+                            src="assets/img/icons/item_mystery_box.png" style="width:30px;"> <strong
+                            style="color:#6e2e00;">Mystery Box</strong></div>
+                    <div style="font-weight:bold; color:#a12b00;"><img src="assets/img/icons/icon_diamond.png"
+                            style="width:16px; vertical-align:middle;"> 300</div>
+                </button>
+            </div><button class="btn-close-quick" id="btn-close-shatee" style="margin-top:10px;">Tutup</button>
+        </div>
+    </div>
+
+    <div id="undian-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <div class="modal-header-flex">
+                <h3 class="modal-title" style="margin:0;">Sate Hoki</h3>
+                <div class="currency-pill"><img src="assets/img/icons/item_kupon.png"><span class="val-kupon">0</span>
+                </div>
+            </div>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="gacha-wheel" id="gacha-wheel"><img src="assets/img/icons/icon_diamond.png"
+                        class="wheel-icon" style="--a: 22.5deg;"><img src="assets/img/icons/item_besek.png"
+                        class="wheel-icon" style="--a: 67.5deg;"><img src="assets/img/icons/item_bijih.png"
+                        class="wheel-icon" style="--a: 112.5deg;"><img src="assets/img/icons/item_peti_kayu.png"
+                        class="wheel-icon" style="--a: 157.5deg;"><img src="assets/img/icons/icon_diamond.png"
+                        class="wheel-icon" style="--a: 202.5deg;"><img src="assets/img/icons/item_daur.png"
+                        class="wheel-icon" style="--a: 247.5deg;"><img src="assets/img/icons/item_peti_emas.png"
+                        class="wheel-icon" style="--a: 292.5deg;"><img src="assets/img/icons/item_jamu.png"
+                        class="wheel-icon" style="--a: 337.5deg;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; padding:0 10px;">
+                <label class="chk-label"><input type="checkbox" id="chk-gacha-10x" class="sunken-checkbox"> Putar 10x</label>
+                <label class="chk-label"><input type="checkbox" id="chk-gacha-skip" class="sunken-checkbox"> Skip Animasi</label>
+            </div><button class="btn-action" id="btn-spin-wheel">PUTAR RODA!</button><button class="btn-close-quick" id="btn-close-undian">Tutup</button>
+        </div>
+    </div>
+
+    <div id="quick-buy-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <div class="modal-header-flex">
+                <h3 class="modal-title" id="qb-title">Transaksi</h3>
+                <div class="currency-pill" id="qb-pill"></div>
+            </div>
+            <p id="qb-desc"
+                style="font-size:0.9rem; color:#4f1a10; margin-bottom:20px; background:#f2dec4; padding:15px; border-radius:8px; border:1px dashed #c29b70;">
+            </p>
+            <div id="qb-extra" style="margin-bottom: 15px; display: none;"></div>
+            <button class="btn-action" id="qb-confirm-btn"></button><button
+                class="btn-close-quick" id="btn-close-qb">Batal</button>
+        </div>
+    </div>
+
+    <div id="options-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Pengaturan</h3>
+            <div style="text-align:left; margin-bottom:15px;">
+                <label style="font-weight:bold; font-size:0.85rem; color:#6e2e00;">Volume BGM</label>
+                <input type="range" id="slider-bgm" min="0" max="1" step="0.1" value="0.5"
+                    style="width:100%; accent-color:#e08b1b;">
+            </div>
+            <div style="text-align:left; margin-bottom:20px;">
+                <label style="font-weight:bold; font-size:0.85rem; color:#6e2e00;">Volume SFX</label>
+                <input type="range" id="slider-sfx" min="0" max="1" step="0.1" value="0.8"
+                    style="width:100%; accent-color:#e08b1b;">
+            </div>
+            <button id="btn-toggle-bgm" class="btn-action bgm-on"
+                style="margin-bottom:10px;">🎵 Musik: ON</button>
+            <button class="btn-action" id="btn-open-guide"
+                style="margin-bottom:10px;">📖 Panduan Bermain</button>
+            <button class="btn-action" id="btn-save-exit"
+                style="margin-bottom:10px;">💾 Simpan & Keluar</button>
+            <button class="btn-close-quick" id="btn-close-options">Kembali</button>
+        </div>
+    </div>
+
+    <div id="guide-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box" style="max-height: 80vh; overflow-y: auto;">
+            <h3 class="modal-title">Panduan Juragan</h3>
+            <div style="text-align:left; font-size:0.85rem; color:#4f1a10; line-height:1.5; margin-bottom: 15px;">
+                <strong>🍡 Tusuk Sate:</strong><br>Kumpulkan tusuk sate dari pelanggan yang selesai makan. Kumpulkan 100 tusuk untuk ditukar dengan Kupon Sate Hoki di aplikasi Rongsok-In!<br><br>
+                <strong>👍 Jempol (Sate-Gram):</strong><br>Pelanggan yang puas kadang memberikan Jempol. Kumpulkan Jempol untuk menaikkan Rating Warung kamu di Sate-Gram. Rating tinggi = harga sate melambung!<br><br>
+                <strong>🌟 Tamu VIP & Trance:</strong><br>Setiap akhir stage, Tamu VIP akan datang. Layani VIP secepat mungkin dengan combo penuh! Jika bar VIP mencapai ujung, mode <strong>TRANCE</strong> akan aktif, memberikan penghasilan koin yang meledak!<br><br>
+                <strong>🍵 Jamu (Go-Jamu):</strong><br>Beli jamu dari Go-Jamu atau dapatkan dari Besek. Jamu akan memberikan buff <em>Power x2 & Crit x5</em>.<br>
+                <div style="background:rgba(255,255,255,0.5); padding:10px; border-radius:8px; border-left:4px solid #e08b1b; margin-top:8px;">
+                    <i style="color:#8a6c55; display:block; margin-bottom:5px;">"Mbok Jamu makin happy kalau kamu langganan beli jamu pakai berlian dari Go-Jamu! Setiap kamu beli, level Jamu akan naik dan durasi Jamu yang diproduksi Mbok makin panjang lho!"</i>
+                    <strong style="color:#e08b1b; font-size:0.9rem;">Level Jamu Mbok saat ini: <span id="guide-jamu-level">1</span></strong>
+                </div>
+            </div>
+            <button class="btn-close-quick" id="btn-close-guide">Paham, Lanjutkan!</button>
+        </div>
+    </div>
+
+    <div id="offline-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Warung Laris!</h3>
+            <p id="off-time" style="font-size:0.85rem; color:#8a6c55; margin-bottom:15px;"></p>
+            <div
+                style="background:#f2dec4; padding:15px; border-radius:12px; border:2px dashed #c29b70; text-align:left; display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span
+                        style="font-weight:bold; color:#6e2e00;">Pelanggan:</span><span id="off-cust"
+                        style="font-weight:900; color:#e08b1b; font-size:1.1rem;">0</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span
+                        style="font-weight:bold; color:#6e2e00;">Pendapatan:</span><span id="off-money"
+                        style="font-weight:900; color:#00e676; font-size:1.1rem;">0</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span
+                        style="font-weight:bold; color:#6e2e00;">EXP Didapat:</span><span id="off-exp"
+                        style="font-weight:900; color:#42a5f5; font-size:1.1rem;">0</span></div>
+                <hr style="border:none; border-top:1px solid #c29b70;">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span
+                        style="font-size:0.8rem; color:#8a6c55;"><img src="assets/img/icons/icon_jempol.png"
+                            style="width:14px;"> Jempol:</span><span id="off-jempol"
+                        style="font-weight:bold; color:#6e2e00;">0</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span
+                        style="font-size:0.8rem; color:#8a6c55;"><img src="assets/img/icons/item_besek.png"
+                            style="width:14px;"> Besek:</span><span id="off-besek"
+                        style="font-weight:bold; color:#6e2e00;">0</span></div>
+            </div><button class="btn-action" id="btn-close-offline">MANTAP!</button>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Rincian Warung</h3>
+            <div id="stats-content"
+                style="border: 2px solid #c29b70; border-radius: 12px; padding: 12px; background: rgba(255,255,255,0.4); text-align: left; margin-bottom:15px;">
+            </div>
+            <button class="btn-close-quick" id="btn-close-stats">Tutup</button>
+        </div>
+    </div>
+
+    <div id="gacha-result-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Selamat!</h3>
+            <div id="gacha-result-icon" style="font-size:4rem; margin:15px 0; display:none;"></div>
+            <p style="font-size:0.9rem; color:#6e2e00; font-weight:bold;">Kamu Mendapatkan:</p>
+            <div id="gacha-result-list"
+                style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:15px 0;"></div><button
+                class="btn-action" id="btn-close-gacha">Bagus!</button>
+        </div>
+    </div>
+
+    <div id="multi-open-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title" id="mo-title">Buka Peti</h3>
+            <div id="mo-lore-panel" style="display:none; flex-direction:column; background:#f2dec4; border:1px solid #c29b70; border-radius:12px; padding:15px; margin-bottom:14px; text-align:center;">
+                <div id="mo-lore-icon" style="width:60px; height:60px; margin:0 auto 10px; background:#dac09c; border-radius:10px; display:flex; justify-content:center; align-items:center; border:1px solid #c29b70; font-size:2rem;"></div>
+                <p id="mo-lore-text" style="font-size:0.75rem; color:#8a5c3c; font-style:italic; margin:0 0 10px 0;"></p>
+                <div style="text-align:left; font-size:0.8rem; color:#4f1a10; line-height:1.5; border-top:1px dashed #c29b70; padding-top:10px;">
+                    <strong>Dapat dari:</strong> <span id="mo-lore-source"></span><br><br>
+                    <strong>Kegunaan:</strong> <span id="mo-lore-usage"></span>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin:20px 0;">
+                <button class="btn-close-quick" id="btn-mo-min" style="width:40px; margin:0; font-size:0.7rem; font-weight:bold;">MIN</button>
+                <button class="btn-close-quick" id="btn-mo-minus" style="width:40px; margin:0; font-size:1.5rem;">-</button>
+                <div style="font-size:2rem; font-weight:900; color:#6e2e00; width:50px; text-align:center;" id="mo-slider-val">1</div>
+                <button class="btn-close-quick" id="btn-mo-plus" style="width:40px; margin:0; font-size:1.5rem;">+</button>
+                <button class="btn-close-quick" id="btn-mo-max" style="width:40px; margin:0; font-size:0.7rem; font-weight:bold;">MAX</button>
+            </div><input type="range" id="mo-slider" min="1" max="1" value="1"
+                style="width:100%; margin-bottom:20px; accent-color:#e08b1b;"><button class="btn-action"
+                id="btn-mo-confirm">Buka Sekarang</button><button class="btn-close-quick"
+                id="btn-close-mo">Batal</button>
+        </div>
+    </div>
+
+    <div id="stage-modal" class="modal-overlay hidden">
+        <div class="quick-modal-box">
+            <h3 class="modal-title">Pilih Stage</h3>
+            <p style="font-size:0.8rem; color:#4f1a10;">Geser untuk pindah area!</p>
+            <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin:20px 0;">
+                <button class="btn-close-quick" id="btn-stage-minus"
+                    style="width:40px; margin:0; font-size:1.5rem;">-</button>
+                <div style="font-size:2rem; font-weight:900; color:#6e2e00;" id="stage-slider-val">1</div>
+                <button class="btn-close-quick" id="btn-stage-plus"
+                    style="width:40px; margin:0; font-size:1.5rem;">+</button>
+            </div>
+            <input type="range" id="stage-slider" min="1" max="1" value="1"
+                style="width:100%; margin-bottom:20px; accent-color:#e08b1b;">
+            <button class="btn-action" id="btn-confirm-stage">Berangkat!</button>
+            <button class="btn-close-quick" id="btn-close-stage">Batal</button>
+                     </div>
+    </div> <script type="module" src="src/mesin_utama.js"></script>
+</body>
+</html>
