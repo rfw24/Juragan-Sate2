@@ -1,0 +1,531 @@
+/* ================== JURAGAN SATE NUSANTARA (STABIL & RESPONSIVE) ================== */
+@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+:root {
+    --bg-main: #2b1d15; 
+    --accent-orange: #d18536; 
+    --accent-red: #c94c3c;
+    --accent-cyan: #26c6da;
+    --accent-cyan-shadow: #008ba3;
+    --text-main: #f5ebd9;
+    --text-muted: #d0b094;
+    --danger: #b31604;
+    --glass: rgba(255, 255, 255, 0.15);
+
+    /* === WOOD THEME TOKENS === */
+    --wood-dark:   #3b1f0e;
+    --wood-mid:    #6b3a1f;
+    --wood-light:  #c8935a;
+    --wood-grain:  #a0622a;
+    --wood-cream:  #f0dab8;
+    --wood-border: #5c2f1f;
+    --modal-bg:    #d9b07a;
+    --modal-inner: #c9983e;
+    --sunken-shadow: inset 0 4px 10px rgba(0,0,0,0.55), inset 0 1px 3px rgba(0,0,0,0.4);
+    --raised-shadow: 0 6px 0 var(--wood-dark), 0 8px 12px rgba(0,0,0,0.5);
+}
+
+body, p, span, div, input, label {
+    font-family: 'Varela Round', sans-serif;
+    margin: 0; padding: 0; box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+}
+
+h1, h2, h3, h4, h5, h6, button, .btn-action, .btn-confirm-buy, .btn-fan, .app-name, .tab-btn, .sheet-header h3, .stage-title, .absen-title {
+    font-family: 'Fredoka One', cursive !important;
+}
+
+/* Judul modal pakai Skranji — terasa seperti ukiran kayu */
+.modal-title {
+    font-family: 'Skranji', cursive !important;
+    color: var(--wood-dark);
+    text-shadow: 1px 2px 0 rgba(0,0,0,0.3), 0 -1px 0 rgba(255,255,255,0.2);
+    letter-spacing: 0.5px;
+}
+
+#splash-title {
+    font-family: 'Skranji', cursive !important;
+}
+
+.floating-text, .damage-text {
+    font-family: 'Bangers', cursive !important;
+    letter-spacing: 1px;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    height: 100vh; overflow: hidden;
+    display: flex; flex-direction: column;
+}
+
+#splash-screen {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle, #2d1109 0%, #0a0402 100%);
+    z-index: 9999; display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#splash-screen[style*="opacity: 0"] { pointer-events: none !important; }
+.splash-content { text-align: center; width: 80%; }
+.loading-bar-container { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 5px; margin: 20px 0; overflow: hidden; border: 1px solid var(--accent-orange); }
+#loading-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-orange), var(--accent-red)); box-shadow: 0 0 10px var(--accent-orange); }
+
+/* ================== TOP HUD — WOOD PLANK ================== */
+.top-hud {
+    display: flex; justify-content: space-between; padding: 10px;
+    background: url('../assets/img/bg_wood.png') center/cover;
+    /* Efek papan kayu dengan grain dan depth */
+    box-shadow:
+        inset 0 3px 0 rgba(255,255,255,0.08),
+        inset 0 -4px 12px rgba(0,0,0,0.6),
+        0 4px 8px rgba(0,0,0,0.5);
+    border-bottom: 3px solid var(--wood-dark);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    position: relative; z-index: 500; pointer-events: auto;
+}
+/* Widget koin / berlian — terasa sunken ke dalam papan kayu */
+.hud-item {
+    background: linear-gradient(160deg, rgba(0,0,0,0.7) 0%, rgba(30,12,4,0.85) 100%);
+    border: 1px solid var(--wood-grain);
+    border-top-color: rgba(255,255,255,0.08);
+    padding: 5px 12px; border-radius: 8px;
+    display: flex; align-items: center; gap: 8px; min-width: 60px;
+    box-shadow: var(--sunken-shadow), 0 1px 0 rgba(255,255,255,0.05);
+}
+.hud-icon { width: 18px; height: 18px; object-fit: contain; }
+
+/* ================== STAGE WRAPPER ================== */
+.stage-wrapper {
+    position: absolute; top: 65px; left: 50%; transform: translateX(-50%); 
+    z-index: 600; pointer-events: auto; cursor: pointer;
+}
+.stage-info { background: var(--wood-mid); border: 2px solid var(--wood-light); border-radius: 12px; padding: 6px 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.1); min-width: 120px; }
+.stage-title { color: var(--wood-cream); font-size: 0.85rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); } 
+.cust-title { color: #fff; font-size: 0.75rem; margin: 3px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); } 
+.satay-progress { background: rgba(0,0,0, 0.4); height: 12px; border-radius: 6px; position: relative; overflow: hidden; width: 100%; border: 1px solid var(--wood-dark); margin-top: 4px; box-shadow: var(--sunken-shadow); }
+.progress-fill { background: linear-gradient(90deg, var(--accent-cyan-shadow), var(--accent-cyan)); height: 100%; display: block; transition: width 0.2s ease-out; border-radius: 6px; }
+.progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center; font-size: 0.6rem; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; font-weight: bold; line-height: 1; }
+#ui-buff-text-top { top: 105px !important; }
+
+/* ================== GAME CANVAS ================== */
+.stage-container { flex: 1; position: relative; overflow: hidden; z-index: 10; pointer-events: none; }
+#game-canvas { width: 100%; height: 100%; display: block; pointer-events: auto; }
+#vip-container { pointer-events: auto; }
+
+/* ================== ACTION AREA ================== */
+.action-area {
+    padding: 12px 15px; 
+    background: url('../assets/img/bg_wood.png') center/cover;
+    border-top: 4px solid var(--wood-dark);
+    display: flex; flex-direction: column; gap: 8px; position: relative; 
+    z-index: 500; pointer-events: auto; 
+    box-shadow: inset 0 4px 15px rgba(0,0,0,0.6), 0 -5px 15px rgba(0,0,0,0.5);
+}
+.stat-row { display: flex; justify-content: space-between; align-items: center; }
+.val-green { color: #4ade80; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.8); }
+.combo-text { font-size: 0.75rem; color: var(--accent-cyan); text-shadow: 1px 1px 2px #000; }
+.button-row { display: flex; gap: 15px; margin-top: 8px; position: relative; }
+.btn-fan { flex: 1; padding: 15px 0; font-size: 1.3rem; border-radius: 12px; color: white; border: 1px solid rgba(255,255,255,0.15); text-shadow: 1px 2px 2px rgba(0,0,0,0.5); transition: all 0.1s; cursor: pointer; pointer-events: auto; }
+.btn-fan-primary { background: linear-gradient(to bottom, #d65545, #b83424); box-shadow: var(--raised-shadow); }
+.btn-fan-secondary { background: linear-gradient(to bottom, #e0943f, #c2721b); box-shadow: var(--raised-shadow); }
+.btn-fan:active, .btn-fan.is-pressed { transform: translateY(6px); box-shadow: 0 0 0 var(--wood-dark), 0 2px 4px rgba(0,0,0,0.5); }
+
+/* ================== BOTTOM NAV — WOOD PLANK ================== */
+.bottom-nav {
+    display: flex; justify-content: space-around;
+    background: url('../assets/img/bg_wood.png') center/cover;
+    padding: 8px 5px;
+    border-top: 3px solid var(--wood-dark);
+    box-shadow:
+        inset 0 4px 12px rgba(0,0,0,0.6),
+        inset 0 -1px 0 rgba(255,255,255,0.05),
+        0 -6px 15px rgba(0,0,0,0.5);
+    position: relative; z-index: 600; pointer-events: auto;
+}
+.nav-item {
+    background: transparent; border: none; color: #e8c88a;
+    font-size: 0.65rem; font-weight: bold; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    transition: transform 0.1s;
+    text-shadow: 1px 1px 3px #000, 0 0 8px rgba(0,0,0,0.8);
+    font-family: 'Fredoka One', cursive;
+}
+.nav-item:active { transform: scale(0.9); }
+.nav-icon { width: 22px; height: 22px; filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.7)); }
+
+/* ================== MODALS & SHEETS — WOOD + SUNKEN ================== */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(3px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000; pointer-events: auto;
+}
+
+/* Panel popup — efek papan kayu ukir dengan frame tebal & sunken interior */
+.quick-modal-box {
+    background: var(--wood-dark);
+    border-radius: 20px;
+    width: 88%; max-width: 340px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 4px;
+    text-align: center;
+    position: relative;
+    box-shadow:
+        0 2px 0 rgba(255,255,255,0.1) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 12px 30px rgba(0,0,0,0.85),
+        0 2px 0 var(--wood-grain);
+    border: 2px solid var(--wood-mid);
+    border-top-color: var(--wood-grain);
+}
+
+/* Inner content area — efek sunken (cekung ke dalam) */
+.quick-modal-box::before {
+    content: '';
+    position: absolute; inset: 4px;
+    border-radius: 17px;
+    background: var(--wood-cream);
+    box-shadow:
+        inset 0 4px 12px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(0,0,0,0.2),
+        inset 1px 0 4px rgba(0,0,0,0.1),
+        inset -1px 0 4px rgba(0,0,0,0.1);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Semua konten di dalam modal di atas pseudo-element */
+.quick-modal-box > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Padding actual konten */
+.quick-modal-box .modal-title {
+    padding: 16px 16px 0;
+    display: block;
+}
+
+/* Semua child langsung setelah judul dapat padding */
+.quick-modal-box > *:not(.modal-title) {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/* Konten scrollable (stats, review) — sunken lebih dalam */
+#stats-content, #review-list {
+    max-height: 160px; overflow-y: auto; margin-bottom: 15px;
+    border: 1px solid var(--wood-grain);
+    border-radius: 8px; padding: 10px;
+    background: rgba(255,255,255,0.4);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
+    text-align: left; font-size: 0.9rem; color: var(--wood-dark);
+}
+#stats-content p {
+    border-bottom: 1px dashed rgba(0,0,0,0.15);
+    padding: 6px 0; margin: 0;
+    display: flex; justify-content: space-between;
+}
+#stats-content p:last-child { border-bottom: none; }
+
+/* Tombol aksi utama — kayu raised */
+.btn-action {
+    background: linear-gradient(180deg, #f0a030 0%, #c97a10 100%);
+    color: #3b1f0e;
+    border: none; border-radius: 12px;
+    padding: 10px 20px; font-size: 0.9rem;
+    box-shadow: 0 5px 0 var(--wood-dark), 0 6px 8px rgba(0,0,0,0.4);
+    cursor: pointer; width: 100%;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+.btn-action:active, .btn-action.is-pressed {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 var(--wood-dark), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Bottom sheet — papan kayu meluncur ke atas */
+.bottom-sheet {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 70vh;
+    background: var(--wood-cream);
+    border-radius: 25px 25px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    z-index: 900;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.6);
+    border-top: 4px solid var(--wood-dark);
+    pointer-events: auto;
+}
+.bottom-sheet.open { transform: translateY(0); }
+
+/* TABS */
+.tabs-container { display: flex; background: #a07040; border-bottom: 2px solid #5c2f1f; overflow: hidden; }
+.tab-btn { 
+    flex: 1; padding: 10px; cursor: pointer; font-size: 0.85rem; 
+    color: #d4b896; text-align: center;
+    background: linear-gradient(180deg, #7a4a28 0%, #5c3018 100%);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.08);
+    border-right: 1px solid rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.tab-btn:last-child { border-right: none; }
+.tab-btn.active { 
+    background: linear-gradient(180deg, #e8cda7 0%, #dac09c 100%); 
+    color: #4f1a10; 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 2px 0 rgba(255,255,255,0.15);
+    border-bottom: 3px solid var(--accent-orange); 
+    text-shadow: none;
+}
+
+/* Efek arang menyala saat tab diklik */
+@keyframes ember-glow {
+    0%   { color: #ff6b35; text-shadow: 0 0 8px #ff4500, 0 0 15px rgba(255,69,0,0.6); }
+    100% { color: #4f1a10; text-shadow: none; }
+}
+.tab-btn.ember-flash {
+    animation: ember-glow 0.5s ease-out forwards;
+}
+
+/* UPGRADES */
+.sheet-content { padding: 15px; height: calc(100% - 130px); overflow-y: auto; text-align: left; }
+.upgrade-card { background: rgba(255,255,255,0.6); border: 2px solid #c29b70; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: #4f1a10; }
+.locked-card { opacity: 0.6; filter: grayscale(0.8); }
+.upg-info h4 { margin: 0 0 4px 0; font-size: 1rem; color: #6e2e00; }
+.upg-info p { margin: 0; font-size: 0.75rem; color: #8a6c55; }
+.btn-buy { 
+    background: linear-gradient(180deg, #f0a030 0%, #c97a10 100%); 
+    color: #3b1f0e; 
+    border: 1px solid rgba(255,255,255,0.3); 
+    border-radius: 8px; padding: 7px 10px; 
+    font-weight: bold; font-family: 'Fredoka One', cursive; 
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25); 
+    box-shadow: 0 4px 0 var(--wood-dark), 0 5px 6px rgba(0,0,0,0.3); 
+    font-size: 0.8rem; cursor: pointer; 
+    transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1); 
+    line-height: 1.3;
+}
+.btn-buy:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--wood-dark), 0 2px 3px rgba(0,0,0,0.3); }
+.btn-buy:disabled { background: linear-gradient(180deg, #8a6c55 0%, #6e2e00 100%) !important; border-color: #c29b70 !important; box-shadow: 0 4px 0 #4f1a10 !important; color: #dac09c !important; text-shadow: none !important; cursor: not-allowed; }
+.mastery-text { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+.mastery-locked { background: #dac09c; color: #8a6c55; }
+.mastery-unlocked { background: #ffca28; color: #6e2e00; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+/* INVENTORY */
+.inv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+.inv-item { background: rgba(0,0,0,0.15); border: 4px solid var(--wood-mid); border-radius: 12px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; position: relative; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 3px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.2); cursor: pointer; transition: 0.1s; }
+.inv-item:active { transform: scale(0.95); }
+.inv-qty { position: absolute; bottom: -6px; right: -6px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 900; padding: 2px 6px; border-radius: 10px; border: 2px solid var(--wood-cream); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+/* PUSAKA */
+.equip-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.equip-box { background: rgba(0,0,0,0.15); border: 4px solid var(--wood-mid); border-radius: 12px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; position: relative; cursor: pointer; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 3px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.2); transition: 0.1s; }
+.equip-box:active { transform: scale(0.95); }
+.equip-box.biasa { border-color: #a18a7d; }
+.equip-box.langka { border-color: #42a5f5; }
+.equip-box.epik { border-color: #ab47bc; }
+.equip-box.legenda { border-color: #e08b1b; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(224,139,27,0.7); }
+.equip-box.equipped::after { content: 'Dipakai'; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #00e676; color: white; font-size: 0.55rem; padding: 2px 6px; border-radius: 8px; border: 1px solid #00b25c; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 10; }
+.eq-lvl-badge { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: bold; color: white; background: rgba(0,0,0,0.75); padding: 2px 6px; border-radius: 8px; border: 1px solid var(--wood-cream); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.equip-slot { width: 60px; height: 60px; background: rgba(0,0,0,0.15); border: 3px dashed var(--wood-dark); border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3); }
+.equip-slot.filled { border-style: solid; border-width: 4px; box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), 0 2px 0 rgba(255,255,255,0.2); }
+
+/* HP APPS */
+.app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; margin-bottom: 15px; }
+.app-btn { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 4px; }
+.app-icon { width: 44px; height: 44px; border-radius: 10px; box-shadow: 0 3px 5px rgba(0,0,0,0.2); }
+.app-name { font-size: 0.65rem; color: #4f1a10; }
+
+/* GACHA WHEEL */
+.wheel-container { position: relative; width: 170px; height: 170px; margin: 0 auto 12px; }
+.gacha-wheel { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #c29b70; background: conic-gradient(#f2dec4 0deg 45deg, #e8cda7 45deg 90deg, #f2dec4 90deg 135deg, #e8cda7 135deg 180deg, #f2dec4 180deg 225deg, #e8cda7 225deg 270deg, #f2dec4 270deg 315deg, #e8cda7 315deg 360deg); position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); overflow: hidden; }
+.wheel-icon { position: absolute; width: 25px; height: 25px; top: 8px; left: 50%; margin-left: -12px; transform-origin: 50% 77px; transform: rotate(var(--a)); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+.wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 20px solid var(--danger); z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+
+/* MISC & RATING */
+.modal-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.currency-pill { background: rgba(255,255,255,0.5); padding: 4px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; font-weight: bold; color: #6e2e00; border: 1px solid #c29b70; }
+.currency-pill img { width: 16px; height: 16px; }
+/* Sheet header — palang kayu ukir */
+.sheet-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px;
+    background: url('../assets/img/bg_wood.png') center/cover;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 2px solid var(--wood-dark);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.sheet-header h3 { margin: 0; font-size: 1.2rem; font-family: 'Skranji', cursive !important; color: var(--wood-cream); text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+.btn-close-sheet {
+    background: var(--danger); color: white; border: none; border-radius: 50%;
+    width: 30px; height: 30px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 3px 0 #8e1103, 0 4px 6px rgba(0,0,0,0.4);
+}
+.btn-close-sheet:active { transform: translateY(2px); box-shadow: 0 1px 0 #8e1103; }
+.btn-confirm-buy {
+    background: linear-gradient(180deg, #d4af37 0%, #aa7c11 100%);
+    color: #4a3000; border: 1px solid #f9e596; border-radius: 8px; padding: 10px; width: 100%;
+    font-weight: bold; font-family: 'Fredoka One', cursive; text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 4px 0 #7a580a, 0 5px 6px rgba(0,0,0,0.4);
+    cursor: pointer; transition: all 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.btn-confirm-buy:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 0 #7a580a, 0 2px 3px rgba(0,0,0,0.4); }
+.btn-close-quick {
+    background: linear-gradient(180deg, #e8c98a 0%, #c9a555 100%);
+    color: var(--wood-dark); border: 1px solid var(--wood-grain);
+    border-top-color: rgba(255,255,255,0.3);
+    border-radius: 8px; padding: 8px 15px; font-weight: bold;
+    cursor: pointer; margin-top: 10px;
+    box-shadow: 0 3px 0 var(--wood-mid), 0 4px 6px rgba(0,0,0,0.2);
+}
+.btn-close-quick:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--wood-mid); }
+
+.review-item { background: rgba(255,255,255,0.6); padding: 8px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #c29b70; }
+.review-name { font-weight: bold; font-size: 0.8rem; color: #6e2e00; display: flex; justify-content: space-between; }
+.review-text { font-style: italic; font-size: 0.75rem; color: #4f1a10; margin-top: 4px; }
+
+/* ABSEN GRID */
+.absen-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+.absen-day { background: rgba(255,255,255,0.4); border: 1px solid #c29b70; border-radius: 8px; padding: 5px; display: flex; flex-direction: column; align-items: center; position: relative; opacity: 0.5; }
+.absen-day.claimed { opacity: 1; background: #c5e1a5; border-color: #7cb342; }
+.absen-day.today { opacity: 1; background: #fff59d; border-color: #fbc02d; box-shadow: 0 0 10px rgba(251,192,45,0.5); transform: scale(1.05); z-index: 2; }
+.absen-icon { width: 30px; height: 30px; object-fit: contain; margin: 5px 0; }
+.absen-val { font-weight: 900; font-size: 0.8rem; color: #6e2e00; }
+.check-mark { position: absolute; top: -5px; right: -5px; background: #00e676; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.6rem; display: flex; justify-content: center; align-items: center; border: 1px solid white; }
+
+/* ================== FLOATING ABSEN ================== */
+.floating-btn {
+    position: absolute; bottom: 15px; right: 15px; width: 55px; height: 55px;
+    background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+    display: flex; justify-content: center; align-items: center; z-index: 850; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.4);
+    cursor: pointer; transition: all 0.2s ease-out; pointer-events: auto;
+}
+.floating-btn:active, .floating-btn.is-pressed { transform: scale(0.85); background: rgba(255, 255, 255, 0.25); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.floating-btn img { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+.notif-dot { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 0.7rem; font-weight: 900; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid rgba(255,255,255,0.8); animation: pulse-dot 1s infinite; font-family: 'Varela Round', sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+
+/* ================== BGM TOGGLE BUTTON ================== */
+.btn-toggle-bgm-pancing { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; font-family: 'Fredoka One', cursive; border: none; cursor: pointer; transition: all 0.2s; margin-bottom: 15px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+.bgm-on { background: #00e676; box-shadow: 0 4px 0 #00b25c; }
+.bgm-off { background: var(--danger); box-shadow: 0 4px 0 #8e1103; }
+.btn-toggle-bgm-pancing:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+
+/* ================== ANIMASI & EFEK ================== */
+@keyframes pulse-dot { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.2); } 100% { transform: scale(1); } }
+@keyframes springIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes springOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.7); opacity: 0; } }
+
+/* PERBAIKAN: Menghilangkan !important yang terlalu keras kepala */
+.hidden { display: none; }
+.gpu-accel { transform: translateZ(0); backface-visibility: hidden; }
+
+/* ================== ANIMASI TUSUK SATE TERPENTAL ================== */
+@keyframes tusukSpinTerbang { 0% { transform: rotate(0deg); } 100% { transform: rotate(1080deg); } }
+@keyframes tusukSpinAspal { 0% { transform: rotate(1080deg); } 100% { transform: rotate(1440deg); } }
+@keyframes tusukSpinTerbang { 0% { transform: rotate(0deg); } 100% { transform: rotate(1080deg); } }
+@keyframes tusukBlinkSlow {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); }
+    50% { opacity: 0.7; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)) brightness(1.3); }
+}
+@keyframes tusukBlinkFast {
+    0% { opacity: 1; filter: brightness(1); }
+    15% { opacity: 0.2; }
+    30% { opacity: 1; filter: brightness(1.5); }
+    45% { opacity: 0.2; }
+    60% { opacity: 1; filter: brightness(1.5); }
+    75% { opacity: 0.1; }
+    90% { opacity: 0.5; filter: brightness(1.5); }
+    100% { opacity: 0; filter: brightness(1); }
+}
+
+.tusuk-sprite {
+    font-family: 'Bangers', cursive !important;
+    width: 40px; height: 40px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
+    position: absolute; cursor: pointer; z-index: 50; pointer-events: auto;
+}
+    /* transition left is linear, top has a negative cubic-bezier point to make it go UP before going DOWN (parabolic arc) */
+    transition: left 1.2s linear, top 1.2s cubic-bezier(0.25, -0.8, 0.8, 1); 
+}
+.tusuk-terbang { animation: tusukSpinTerbang 1.2s linear forwards; }
+.tusuk-diam { animation: tusukSpinAspal 5s linear infinite, tusukBlinkSlow 2s ease-in-out infinite; }
+.tusuk-hilang { animation: tusukSpinAspal 5s linear infinite, tusukBlinkFast 1.5s ease-out forwards; }
+/* ================== ANIMASI TABS ================== */
+@keyframes slideJuicy {
+    0% { opacity: 0; transform: translateX(25px) scale(0.98); }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+.slide-juicy {
+    animation: slideJuicy 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* ================== TAMBAHAN: UI SHATEE & GARIS OVERHEAT ================== */
+
+/* 1. Grid & Border untuk Produk Sha-Tee */
+.shatee-card {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(255,255,255,0.8); border: 2px solid #c29b70; border-radius: 10px;
+    padding: 7px 12px; margin-bottom: 7px; width: 100%; cursor: pointer;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 3px 5px rgba(0,0,0,0.15);
+    transition: transform 0.1s;
+    font-size: 0.9rem;
+}
+.shatee-card:active { transform: translateY(3px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1); }
+
+/* 2. Garis Penentu Overheat (95%) */
+.heat-bar-container {
+    width:100%; height:8px; background:#2e0e08; border-radius:4px; 
+    position:relative; overflow:hidden; border:1px solid #4f1a10;
+}
+.heat-marker {
+    position:absolute; top:0; left:95%; width:3px; height:100%; 
+    background:#00e5ff; box-shadow:0 0 8px #00e5ff; z-index:5;
+}
+
+/* ================== SUNKEN CHECKBOX ================== */
+.sunken-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px !important;
+    height: 22px !important;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--wood-grain);
+    border-radius: 6px;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1);
+    position: relative;
+    cursor: pointer;
+    margin: 0 !important;
+    display: inline-block;
+    vertical-align: middle;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sunken-checkbox:active {
+    transform: scale(0.9);
+}
+.sunken-checkbox:checked {
+    background: linear-gradient(135deg, #00b25c, #00e676);
+    border-color: #00e676;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(0,230,118,0.5);
+}
+.sunken-checkbox:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 900;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    font-family: 'Fredoka One', cursive;
+}
+.chk-label {
+    display: flex; align-items: center; gap: 8px; 
+    font-size: 0.85rem; color: #f2dec4; cursor: pointer;
+    font-weight: bold; font-family: 'Varela Round', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
